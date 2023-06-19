@@ -7,6 +7,7 @@ from tqdm import tqdm
 from model.MAE import patchify, unpatchify
 from einops import rearrange
 from model.MAE import *
+from model.UNETR import *
 
 def seed_anything(seed=2023):
     torch.manual_seed(seed)
@@ -21,13 +22,27 @@ def get_logger(project_name, api_key, config_dict=None):
     wandb.init(project=project_name, config=config_dict, resume=True)
     return wandb
 
-def get_model(encoder_embedding_dim=768, encoder_layers=12, n_heads_encoder_layer=12, decoder_embedding_dim=512, decoder_layers=4, n_heads_decoder_layer=16, patch_size=4, num_patches=16):
+# ---------------------------MAE-------------------------------------
+def get_mae_model(encoder_embedding_dim=768, encoder_layers=12, n_heads_encoder_layer=12, decoder_embedding_dim=512, decoder_layers=4, n_heads_decoder_layer=16, patch_size=4, num_patches=16):
     # num_patches (on width or height)= image_size // patch_size
     model = MaskedAutoEncoder(
         Transformer(embedding_dim=encoder_embedding_dim, n_layers=encoder_layers, n_heads=n_heads_encoder_layer, feedforward_dim=encoder_embedding_dim*4),
         Transformer(embedding_dim=decoder_embedding_dim, n_layers=decoder_layers, n_heads=n_heads_decoder_layer, feedforward_dim=decoder_embedding_dim*4),
         encoder_embedding_dim=encoder_embedding_dim, decoder_embedding_dim=decoder_embedding_dim, patch_size=patch_size, num_patches=num_patches
     )
+    return model
+
+# ---------------------------UNETR-------------------------------------
+
+def get_unetr_model(pretrained=None):
+    model = None
+    if pretrained is not None:
+        mae_pretrained = get_mae_model()
+        ckpt = torch.load(pretrained)
+        mae_pretrained.load_state_dict(ckpt['model_state_dict'])
+        model = UNETR(UNETR_Encoder(mae_pretrained))
+    else:
+        model = UNETR(UNETR_Encoder())
     return model
 
 # ----------------------------------------------------------------

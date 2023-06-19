@@ -5,7 +5,7 @@ import math
 from torchvision.transforms import ToTensor, Compose
 from torch.utils.data import DataLoader
 from dataset.AFLW import AFLW
-from utils.utils import get_model, seed_anything, get_logger, pretrain_train_one_epoch, pretrain_val_one_epoch, save_checkpoint
+from utils.utils import get_mae_model, seed_anything, get_logger, pretrain_train_one_epoch, pretrain_val_one_epoch, save_checkpoint
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -41,7 +41,7 @@ def main():
     val_dataloader = DataLoader(val_dataset, batch_size=cfg['BATCH_SIZE'], shuffle=True, num_workers=cfg['NUM_WORKERS'])
 
     # Model
-    model = get_model()
+    model = get_mae_model()
 
     device = None
 

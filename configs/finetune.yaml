@@ -1,0 +1,32 @@
+# DatasetConfig
+IMG_SIZE: 64
+BATCH_SIZE: 16
+NUM_WORKERS: 2
+NUM_SAMPLES: 1000
+TRAIN_IMG_DIR: '/kaggle/input/aflw-face-crop/images_train/'
+TEST_IMG_DIR: '/kaggle/input/aflw-face-crop/images_test/'
+TRAIN_ANNOTATION_FILE: '/kaggle/input/aflw-face-crop/train.txt'
+TEST_ANNOTATION_FILE: '/kaggle/input/aflw-face-crop/test.txt'
+
+
+# ModelConfig
+ENCODER_EMBEDDING_DIM: 768
+DECODER_EMBEDDING_DIM: 512
+NUM_ENCODER_LAYERS: 12
+NUM_DECODER_LAYERS: 4
+NUM_HEADS_ENCODER_LAYER: 12
+NUM_HEADS_DECODER_LAYER: 16
+
+
+CHECKPOINT_PATH: '/kaggle/working/checkpoint_finetune.pt'
+PROJECT_NAME: 'MAE-AFLW'
+WANDB_API_KEY: ''
+
+BASE_LR: 1.5e-4
+WEIGHT_DECAY: 5.0e-2
+WARMUP_EPOCH: 20
+TOTAL_EPOCH: 200
+
+NUM_POINTS: 19
+HEATMAP_SIZE: 64
+SIGMA: 1
