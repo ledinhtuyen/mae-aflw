@@ -1,0 +1,12 @@
+einops
+wandb
+graphviz
+torchview
+torch
+torchvision
+scipy
+matplotlib
+numpy
+opencv-python
+scikit-image
+tqdm
