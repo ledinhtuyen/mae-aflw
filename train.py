@@ -43,6 +43,8 @@ def main():
     # Model
     model = get_model()
 
+    device = None
+
     if torch.cuda.is_available():
         device = torch.device('cuda')
     else:
@@ -57,16 +59,17 @@ def main():
 
     # Train
     last_epoch = 0
-    if cfg.resume is not None:
+    if args.resume is not None:
         checkpoint = torch.load(cfg['CHECKPOINT_PATH'])
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         lr_scheduler.load_state_dict(checkpoint['lr_scheduler_state_dict'])
         last_epoch = checkpoint['epoch']
         loss = checkpoint['loss']
+        print('Resume from checkpoint: {} (epoch {}, loss {})'.format(args.resume, last_epoch, loss))
 
     for epoch in range(last_epoch, cfg['TOTAL_EPOCH']):
-        pretrain_train_one_epoch(model, epoch, train_dataloader, optimizer, lr_scheduler, step_dict, device)
+        loss = pretrain_train_one_epoch(model, epoch, train_dataloader, optimizer, step_dict, device, lr_scheduler=lr_scheduler)
         pretrain_val_one_epoch(model, epoch, val_dataset, step_dict, device)
         save_checkpoint(model, optimizer, epoch, loss, step_dict, cfg['CHECKPOINT_PATH'], lr_scheduler=lr_scheduler)
 

@@ -108,10 +108,12 @@ def pretrain_train_one_epoch(model, epoch, dataloader, optimizer, step_dict, dev
         losses.append(loss.item())
         data_iterator.set_postfix(loss=np.mean(losses))
         step_dict['train_global_steps'] += 1
-    lr_scheduler.step()
+    if lr_scheduler is not None:
+        lr_scheduler.step()
     avg_loss = sum(losses) / len(losses)
-    print(f'In epoch {epoch}, average traning loss is {avg_loss}.')
+    print(f'In epoch {epoch}, average training loss is {avg_loss}.')
     wandb.log({'mae_loss': avg_loss}, step=epoch)
+    return avg_loss
 
 def pretrain_val_one_epoch(model, epoch, val_dataset, step_dict, device):
     model.eval()
@@ -197,18 +199,20 @@ def finetune_val_one_epoch(model, epoch, dataloader, criterion, step_dict, devic
     print(f'Val epoch {epoch}, avg loss : {np.mean(losses)}, nme : {nme}.')
     return np.mean(losses), nme
 
-def save_checkpoint(model, optimizer, epoch, loss, nme, step_dict, filename, lr_scheduler=None):
+def save_checkpoint(model, optimizer, epoch, loss, step_dict, filename, nme = None, lr_scheduler=None):
     save_dict = {
             'epoch': epoch,
             'model_state_dict': model.state_dict(),
             'optimizer_state_dict': optimizer.state_dict(),
             'loss': loss,
-            'nme': nme,
             'step_dict': step_dict
     }
 
     # if use cosine annealing lr scheduler, save its state_dict
     if lr_scheduler is not None:
         save_dict['lr_scheduler_state_dict'] = lr_scheduler.state_dict()
+    
+    if nme is not None:
+        save_dict['nme'] = nme
 
     torch.save(save_dict, filename)
