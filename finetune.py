@@ -79,6 +79,7 @@ def main():
     loss = checkpoint['loss']
     nme = checkpoint['nme']
     step_dict = checkpoint['step_dict']
+    print('Resume from epoch %d, loss: %.4f, nme: %.4f' % (last_epoch, loss, nme))
   elif args.resume is not None and args.pretrained is not None:
     print('Need only pretrained or resume, not both.')
     return
