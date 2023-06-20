@@ -25,7 +25,7 @@ def main():
 
   step_dict = {
       'train_global_steps': 0,
-      'valid_global_steps': 0,
+      'val_global_steps': 0,
   }
 
   # Wandb
