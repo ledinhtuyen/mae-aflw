@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import einops
 from einops import rearrange
-from MAE import patchify
+from .MAE import patchify
 
 class SingleDeconv2DBlock(nn.Module):
     def __init__(self, in_planes, out_planes):

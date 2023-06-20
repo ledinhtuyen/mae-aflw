@@ -70,7 +70,7 @@ def main():
   last_epoch = 0
   loss = 0
   nme = 0
-  if args.resume is None and args.pretrained is not None:
+  if args.resume is not None and args.pretrained is None:
     checkpoint = torch.load(cfg['CHECKPOINT_PATH'])
     model.load_state_dict(checkpoint['model_state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
@@ -91,7 +91,7 @@ def main():
     val_loss, nme_val = finetune_val_one_epoch(model, epoch, finetune_val_dataloader, criterion, step_dict, device)
     wandb.log({'train_loss': train_loss, 'val_loss': val_loss}, step=epoch)
     wandb.log({'nme_train': nme_train, 'nme_val': nme_val}, step=epoch)
-    save_checkpoint(model, optimizer, epoch, train_loss, val_loss, step_dict, cfg['CHECKPOINT_PATH'], lr_scheduler)
+    save_checkpoint(model, optimizer, epoch, train_loss, step_dict, cfg['CHECKPOINT_PATH'], nme=nme_train, lr_scheduler=lr_scheduler)
 
 if __name__ == '__main__':
     main()
